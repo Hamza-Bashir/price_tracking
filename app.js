@@ -5,6 +5,10 @@ require("dotenv").config();
 const app = express();
 // const routes = require("./routes");
 
+app.get("/", (req,res) => {
+  res.send("Server start successfully")
+})
+
 
 const authenticate = require("./middlewares/auth.middleware");
 const { authenticateRoutes } = require("./config/unlessRoutes");
@@ -18,9 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/uploads", express.static("uploads")); 
 
 
-app.get("/api/v1/health", (req, res) => {
-  res.send("✅ Server is healthy");
-});
+
 
 
 app.use(authenticate.unless(authenticateRoutes));
