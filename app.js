@@ -6,7 +6,7 @@ const app = express();
 // const routes = require("./routes");
 
 app.get("/", (req,res) => {
-  res.send("Server start successfully")
+  res.send("Server run successfully")
 })
 
 
