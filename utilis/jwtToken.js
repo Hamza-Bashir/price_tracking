@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken")
+import jwt from "jsonwebtoken"
 
 const signJwtToken = (payLoad, expiresIn = "1d")=>{
     return jwt.sign(payLoad, process.env.JWT_KEY, {expiresIn})
@@ -14,4 +14,4 @@ const verifyJwtToken = (token)=>{
     }
 }
 
-module.exports = {signJwtToken, verifyJwtToken}
+export {signJwtToken, verifyJwtToken}

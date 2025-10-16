@@ -1,5 +1,5 @@
-const AppError = require("../utilis/AppError")
-const message = require("../constants/messages")
+import AppError from "../utilis/AppError.js"
+import message from "../constants/messages.js"
 
 const errorHandler = (err, req, res, next) => {
     let statusCode = err.statusCode || 500
@@ -16,4 +16,4 @@ const errorHandler = (err, req, res, next) => {
     })
 }
 
-module.exports = errorHandler
+export {errorHandler}

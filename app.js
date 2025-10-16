@@ -1,19 +1,23 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
+dotenv.config()
+
+import { swaggerUi, swaggerSpec } from "./config/swagger.js";
 
 const app = express();
-// const routes = require("./routes");
+
+
+import {routes} from "./routes/index.js"
 
 app.get("/", (req,res) => {
   res.send("Server run successfully")
 })
 
-
-const authenticate = require("./middlewares/auth.middleware");
-const { authenticateRoutes } = require("./config/unlessRoutes");
-const errorHandler = require("./middlewares/error.middleware");
-const notFound = require("./middlewares/notFound");
+import authenticateMiddleware from "./middlewares/auth.middleware.js"
+import {authenticate} from "./config/unlessRoutes.js"
+import {errorHandler} from "./middlewares/error.middleware.js"
+import {notFound} from "./middlewares/notFound.js"
 
 app.use(cors());
 app.use(express.json());
@@ -25,13 +29,15 @@ app.use("/uploads", express.static("uploads"));
 
 
 
-app.use(authenticate.unless(authenticateRoutes));
+// app.use(authenticateMiddleware.unless(authenticate));
 
 
-// app.use("/api/v1", routes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use("/api/v1", routes);
 
 
 app.use(notFound);
-app.use(errorHandler);
+// app.use(errorHandler);
 
-module.exports = app;
+export default app

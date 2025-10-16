@@ -1,12 +1,13 @@
-require("dotenv").config()
+import dotenv from "dotenv"
+dotenv.config()
 
-const app = require("./app")
+import app from "./app.js"
 
-const http = require("http")
+import http from "http"
 
 const server = http.createServer(app)
 
-const db = require("./config/db")
+import {db} from "./config/db.js"
 
 const startServer = ()=>{
     try {

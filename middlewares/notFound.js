@@ -1,10 +1,10 @@
-const AppError = require("../utilis/AppError")
-const code = require("../constants/httpStatus")
-const messages = require("../constants/messages")
+import AppError from "../utilis/AppError.js"
+import code from "../constants/httpStatus.js"
+import messages from "../constants/messages.js"
 
 
 const notFound = (req,res,next)=>{
     next(new AppError(messages.SERVER.NOT_FOUND, code.NOT_FOUND))
 }
 
-module.exports = notFound
+export {notFound}

@@ -1,10 +1,10 @@
-const AppError = require("../utilis/AppError")
-const code = require("../constants/httpStatus")
-const messages = require("../constants/messages")
-const {verifyJwtToken} = require("../utilis/jwtToken")
+import AppError from "../utilis/AppError.js"
+import code from "../constants/httpStatus.js"
+import messages from "../constants/messages.js"
+import {verifyJwtToken} from "../utilis/jwtToken.js"
 
 
-const authenticate = (req,res,next)=>{
+const authenticateMiddleware = (req,res,next)=>{
     const authHeader = req.headers.authorization
 
     if(!authHeader || !authHeader.startsWith('Bearer')){
@@ -23,7 +23,7 @@ const authenticate = (req,res,next)=>{
     next()
 }
 
-const unless = require("express-unless")
-authenticate.unless = unless
+import unless from "express-unless"
+authenticateMiddleware.unless = unless
 
-module.exports = authenticate
+export default authenticateMiddleware

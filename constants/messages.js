@@ -1,4 +1,4 @@
-module.exports = {
+const messages = {
     AUTH: {
       LOGIN_SUCCESS: "Login successful",
       REGISTER_SUCCESS: "Registration successful",
@@ -23,4 +23,7 @@ module.exports = {
       INVALID_TYPE: "Invalid file type",
     },
   };
+
+
+  export default messages
   
