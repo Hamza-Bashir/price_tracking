@@ -11,10 +11,12 @@ export const scrapeDaraz = async (url) => {
 
     const data = await page.evaluate((currentUrl) => {
       const priceEl = document.querySelector(".pdp-price_size_xl, .pdp-price_size_l, .pdp-price_size_m, .pdp-price");
+      const nameEl = document.querySelector(".pdp-mod-product-badge-title")
       
       const price = priceEl ? priceEl.innerText.trim() : "Price not found";
+      const name = nameEl ? nameEl.innerText.trim() : "Name not found"
 
-      return { url : currentUrl, price };
+      return { url : currentUrl, name, price };
     }, url);
     return data;
 
