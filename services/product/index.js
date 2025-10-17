@@ -68,7 +68,41 @@ const getAllUrlData = asyncHandler(async (req,res,next) => {
     })
 })
 
+// -------------------------- searchUrlData ---------------------------
+
+const searchUrlData = asyncHandler(async (req,res,next) => {
+
+    const {name} = req.query
+
+    const redisKey = `saerchData:${name.toLowerCase()}`
+
+    const data = await redis.get(redisKey)
 
 
-export { addUrlAndPrice, getAllUrlData }
+    if(data){
+        return res.status(200).json({
+            success : true,
+            message : "Data Search Successfully",
+            data : JSON.parse(data)
+        })
+    }
+
+
+    const existingData = await Product.find({name : {$regex : name, $options : "i"}})
+
+    if(!existingData){
+        return next(new AppError("Data not exist", 404))
+    }
+
+    await redis.set(redisKey, JSON.stringify(existingData))
+
+    res.status(200).json({
+        success : true,
+        message : "Data Search Successfully",
+        data : existingData
+    })
+
+})
+
+export { addUrlAndPrice, getAllUrlData, searchUrlData }
 
