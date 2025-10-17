@@ -1,6 +1,6 @@
 import express from "express"
 const router = express.Router()
-import {addUrlAndPrice} from "../../services/product/index.js"
+import {addUrlAndPrice, getAllUrlData} from "../../services/product/index.js"
 import validate from "../../middlewares/validate.js"
 import addUrlSchema from "../../middlewares/joiValidate/addUrl.js"
 
@@ -92,5 +92,9 @@ import addUrlSchema from "../../middlewares/joiValidate/addUrl.js"
 
 
 router.post("/addUrlAndPrice", validate(addUrlSchema), addUrlAndPrice)
+
+
+
+router.get("/getAllData", getAllUrlData)
 
 export default router

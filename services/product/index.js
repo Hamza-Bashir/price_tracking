@@ -5,6 +5,7 @@ import AppError from "../../utilis/AppError.js"
 import redis from "../../config/redis.js"
 
 
+// -------------------------- addUrlApi ---------------------------
 
 const addUrlAndPrice = asyncHandler(async (req,res,next) => {
     
@@ -39,5 +40,35 @@ const addUrlAndPrice = asyncHandler(async (req,res,next) => {
     })
 })
 
-export { addUrlAndPrice }
+
+// -------------------------- getAllUrl ---------------------------
+
+const getAllUrlData = asyncHandler(async (req,res,next) => {
+
+    const data = await redis.get("url")
+
+    if(data){
+        return res.status(200).json({
+            success : true,
+            message : "Data Found Successfully",
+            data : data
+        })
+    }
+    
+    const existingData = await Product.find()
+
+    if(!existingData){
+        return next(new AppError("No Data Found", 401))
+    }
+
+    res.status(200).json({
+        success : true,
+        message : "Data Found Successfully",
+        data : existingData
+    })
+})
+
+
+
+export { addUrlAndPrice, getAllUrlData }
 
