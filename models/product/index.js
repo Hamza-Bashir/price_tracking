@@ -13,6 +13,10 @@ const productSchema = new mongoose.Schema({
     oldPrice : {
         type : String
     },
+    tracking : {
+        type : Boolean,
+        default : true
+    },
     lastChecked : {
         type : Date,
         default : Date.now

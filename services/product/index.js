@@ -3,6 +3,7 @@ import Product from "../../models/product/index.js"
 import asyncHandler from "../../utilis/asyncHandler.js"
 import AppError from "../../utilis/AppError.js"
 import redis from "../../config/redis.js"
+import {io} from "../../server.js"
 
 
 // -------------------------- addUrlApi ---------------------------
@@ -104,5 +105,120 @@ const searchUrlData = asyncHandler(async (req,res,next) => {
 
 })
 
-export { addUrlAndPrice, getAllUrlData, searchUrlData }
+
+// -------------------------- checkLatestPrice ---------------------------
+
+const checkLatestPrice = asyncHandler(async (req,res,next) => {
+
+    const products = await Product.find({tracking : true})
+
+    if(products.length === 0){
+        return next(new AppError("No Product Found", 404))
+    }
+
+    let updatedData = []
+
+    for (const product of products){
+
+        const latestData = await scrapeDaraz(product.url)
+
+        if(!latestData.price) {
+            return next(new AppError("No Latest Price", 400))
+        }
+
+        if(latestData.price !== product.currentPrice){
+            const oldPrice = product.currentPrice
+            const newPrice = latestData.price
+
+            product.oldPrice = oldPrice
+            product.currentPrice = newPrice
+
+            await product.save()
+
+            updatedData.push({
+                name : product.name,
+                url : product.url,
+                oldPrice,
+                newPrice
+            })
+
+            io.emit("priceChanged", {
+                name : product.name,
+                url : product.url,
+                oldPrice,
+                newPrice,
+                message : "Product price changed"
+            })
+
+        }
+
+        
+    }
+
+    if(updatedData.length === 0){
+        return res.status(200).json({
+            success : true,
+            message : "No price change"
+        })
+    }
+
+    res.status(200).json({
+        success : true,
+        message : "Price Changed"
+    })
+})
+
+// -------------------------- stopTracking ---------------------------
+
+const stopTracking = asyncHandler(async (req,res,next) => {
+    const {url} = req.body
+
+    const existingData = await Product.findOne({url})
+
+    if(!existingData){
+        return next(new AppError("Product not exist", 404))
+    }
+
+    if(existingData.tracking === false){
+        return next(new AppError("Tracking already stopped", 401))
+    }
+
+
+    existingData.tracking = false
+
+    await existingData.save()
+
+    res.status(200).json({
+        success : true,
+        message : "Tracking stopped successfully"
+    })
+})
+
+// -------------------------- startTracking ---------------------------
+
+const startTracking = asyncHandler(async (req,res,next) => {
+
+    const {url} = req.body
+
+    const existingData = await Product.findOne({url})
+
+    if(!existingData){
+        return next(new AppError("Product not exist", 404))
+    }
+
+    if(existingData.tracking === true){
+        return next(new AppError("Product already tracking", 401))
+    }
+
+    existingData.tracking = true
+
+    await existingData.save()
+
+    res.status(200).json({
+        success : true,
+        message : "Product tracking start"
+    })
+})
+
+export { addUrlAndPrice, getAllUrlData, searchUrlData, checkLatestPrice, stopTracking, startTracking }
 
