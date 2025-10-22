@@ -102,8 +102,8 @@ router.get("/searchData", searchUrlData)
 
 router.get("/latestPriceCheck", checkLatestPrice)
 
-router.post("/stopTracking", stopTracking)
+router.post("/stopTracking", validate(addUrlSchema), stopTracking)
 
-router.post("/startTracking", startTracking)
+router.post("/startTracking", validate(addUrlSchema), startTracking)
 
 export default router
