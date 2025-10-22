@@ -108,12 +108,12 @@ const searchUrlData = asyncHandler(async (req,res,next) => {
 
 // -------------------------- checkLatestPrice ---------------------------
 
-const checkLatestPrice = asyncHandler(async (req,res,next) => {
+const checkLatestPrice = async () => {
 
     const products = await Product.find({tracking : true})
 
     if(products.length === 0){
-        return next(new AppError("No Product Found", 404))
+        return console.log("Product not found")
     }
 
     let updatedData = []
@@ -123,8 +123,10 @@ const checkLatestPrice = asyncHandler(async (req,res,next) => {
         const latestData = await scrapeDaraz(product.url)
 
         if(!latestData.price) {
-            return next(new AppError("No Latest Price", 400))
+            return console.log("No latest price")
         }
+
+        latestData.price = product.currentPrice + 100
 
         if(latestData.price !== product.currentPrice){
             const oldPrice = product.currentPrice
@@ -156,17 +158,11 @@ const checkLatestPrice = asyncHandler(async (req,res,next) => {
     }
 
     if(updatedData.length === 0){
-        return res.status(200).json({
-            success : true,
-            message : "No price change"
-        })
+        return console.log("No price changed")
     }
 
-    res.status(200).json({
-        success : true,
-        message : "Price Changed"
-    })
-})
+    console.log("Price changed")
+}
 
 // -------------------------- stopTracking ---------------------------
 
