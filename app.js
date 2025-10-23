@@ -14,8 +14,6 @@ app.get("/", (req,res) => {
   res.send("Server run successfully")
 })
 
-import authenticateMiddleware from "./middlewares/auth.middleware.js"
-import {authenticate} from "./config/unlessRoutes.js"
 import {errorHandler} from "./middlewares/error.middleware.js"
 import {notFound} from "./middlewares/notFound.js"
 
@@ -24,13 +22,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/uploads", express.static("uploads")); 
-
-
-
-
-
-// app.use(authenticateMiddleware.unless(authenticate));
-
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
