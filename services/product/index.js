@@ -62,6 +62,8 @@ const getAllUrlData = asyncHandler(async (req,res,next) => {
         return next(new AppError("No Data Found", 401))
     }
 
+    await redis.set(url, JSON.stringify(existingData))
+
     res.status(200).json({
         success : true,
         message : "Data Found Successfully",
